@@ -1,10 +1,15 @@
 import React from 'react';
-import {View, Text, StyleSheet, StatusBar, Alert, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, StatusBar, Alert, TouchableOpacity, Image, TextInput} from 'react-native';
 
 import * as firebase from "firebase";
 export default class SignUp extends React.Component {
     constructor() {
         super();
+
+        this.state = {
+          email: "",
+          password: ""
+        }
     }
 
     componentDidMount() {
@@ -13,8 +18,17 @@ export default class SignUp extends React.Component {
 
     _handleSignUp = () => {
       firebase.auth()
-              .createUserWithEmailAndPassword("sofransebastian@yahoo.com", '123456')
-              .then( () => console.log("Users Registered succesfully!"))
+              .createUserWithEmailAndPassword(this.state.email, this.state.password)
+              .then( () => Alert.alert("Succes",
+                                       "Registered succesfully!",
+                                        [
+                                            {
+                                            text:'Ok',
+                                            onPress: this._handleNavigation
+                                            }
+                                        ]
+                            )
+                    )
               .catch( error => Alert.alert("Error",
                                             error.message,
                                             [
@@ -33,14 +47,79 @@ export default class SignUp extends React.Component {
                     )
     }
 
+    _handleNavigation = () =>{
+      this.props.navigation.navigate("LogIn")
+    }
+
     render() {
-        return (
-            <View style={styles.container}>
+        return (  
+          <View style={styles.container}>
+           
                 <StatusBar style="auto" />
-                <Text>SignUP</Text>
-                <TouchableOpacity onPress={this._handleSignUp}>
-                  <Text>SIGNUP</Text>
-                </TouchableOpacity>
+
+                <View style={{flex:0.3, alignItems:'center', justifyContent:'center', marginBottom:30}}>
+                    <Image  source={require('../images/icon_logo.png')} 
+                            resizeMode="contain" 
+                            style={{width:50,height:50}}/>
+                    <Text style={{fontFamily:'bold-font', fontSize:20, color:'white', marginTop:'2%'}}>Get Started</Text>
+                    <Text style={{fontFamily:'normal-font', fontSize:14, color:'white'}}>Let's create your account</Text>
+                </View>
+
+                <View style={{flex:0.5, alignItems:'center', justifyContent:'center', marginBottom:40}}>
+                    <View>
+                        <View style={{width:'85%'}}>
+                            <Text style={{fontFamily:'normal-font', fontSize:16, color:'white'}}>Email</Text>
+                        </View>
+                        <View style={{backgroundColor:'#272b48', flexDirection:'row', borderRadius:5, alignItems:'center', height:50, width:'85%'}}>
+                            <TextInput  placeholder="Enter your email address"
+                                        placeholderTextColor='white'
+                                        autoCapitalize="none"
+                                        style={{  color:'white',
+                                                  width:'90%',
+                                                  marginHorizontal:'5%',
+                                                  fontSize:14,
+                                                  fontFamily:'normal-font'
+                                              }}
+                                        
+                                        onChangeText={email => this.setState({email:email})}
+                                        value={this.state.email}
+                              />
+                        </View>
+                    </View>
+                    <View style={{marginTop:'5%'}}>
+                        <View style={{width:'85%'}}>
+                            <Text style={{fontFamily:'normal-font', fontSize:16, color:'white'}}>Password</Text>
+                        </View>
+                        <View style={{backgroundColor:'#272b48', flexDirection:'row', borderRadius:5, alignItems:'center', height:50, width:'85%'}}>
+                            <TextInput  secureTextEntry
+                                        placeholder="Enter your password"
+                                        placeholderTextColor='white'
+                                        autoCapitalize="none"
+                                        style={{  color:'white',
+                                                  width:'90%',
+                                                  marginHorizontal:'5%',
+                                                  fontSize:14,
+                                                  fontFamily:'normal-font'
+                                              }}
+                                        onChangeText={password => this.setState({password:password})}
+                                        value={this.state.password}
+                                />
+                        </View>
+                    </View>
+                </View>
+
+                <View style={{flex:0.2, alignItems:'center', justifyContent:'center', marginBottom:30}}>
+                    <TouchableOpacity onPress={this._handleSignUp} style={{backgroundColor:"#00a0d4", width:'60%',height:40, borderRadius:5, alignItems:'center', justifyContent:'center'}} >
+                        <Text style={{fontFamily:'bold-font', fontSize:18, color:'white'}}>REGISTER</Text>
+                    </TouchableOpacity>
+                    <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', marginTop:'2%'}}>
+                        <Text style={{fontFamily:'normal-font', fontSize:14, color:'white'}}>Already have an account?</Text>
+                        <TouchableOpacity onPress={this._handleNavigation}>
+                            <Text style={{fontFamily:'bold-font', fontSize:14, color:'#00a0d4'}}> LOGIN</Text>
+                        </TouchableOpacity> 
+                    </View>
+                </View>
+
             </View>
         );
     }
@@ -48,7 +127,7 @@ export default class SignUp extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor:'#303463'
+        backgroundColor:'#303463',
+        flex:1
     },
 });
