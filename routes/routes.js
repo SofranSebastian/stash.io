@@ -8,6 +8,7 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 
 import Preview from '../screens/preview.js';
 import SignUp from '../screens/sign-up.js';
+import LogIn from '../screens/log-in.js';
 
 
 const Stack = createStackNavigator()
@@ -27,6 +28,14 @@ function MyStack() {
                 />
                 <Stack.Screen   name="SignUp"
                                 component={SignUp}
+                                options={
+                                    ({navigation, route}) => ({
+                                        headerShown: false,
+                                    })
+                                }
+                />
+                <Stack.Screen   name="LogIn"
+                                component={LogIn}
                                 options={
                                     ({navigation, route}) => ({
                                         headerShown: false,
