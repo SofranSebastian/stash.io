@@ -37,8 +37,8 @@ export default class LogIn extends React.Component {
                     )
     }
 
-    _handleNavigation = () =>{
-      this.props.navigation.navigate("Wallet")
+    _handleNavigation = () => {
+      this.props.navigation.navigate("MenuNavigator")
     }
 
     render() {
