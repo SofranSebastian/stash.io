@@ -1,5 +1,6 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Text, Image} from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {NavigationContainer} from '@react-navigation/native';
 
@@ -10,9 +11,48 @@ import Preview from '../screens/preview.js';
 import SignUp from '../screens/sign-up.js';
 import LogIn from '../screens/log-in.js';
 import Wallet from '../screens/wallet.js';
+import BuyAndSell from '../screens/buy-sell.js';
 
 
-const Stack = createStackNavigator()
+const Tab = createMaterialBottomTabNavigator();
+const Stack = createStackNavigator();
+
+function MyBottomTabNavigator(){
+    return(
+        <Tab.Navigator  initialRouteName="MenuNavigator"
+                        activeColor="white"
+                        style={{backgroundColor:"#303463"}}
+                        barStyle={{ backgroundColor:"#272b48",
+                                    borderTopLeftRadius: 20,
+                                    borderTopRightRadius: 20,
+                                    overflow: 'hidden',
+                                    
+                        }}
+                        shifting={true}
+        >
+            <Tab.Screen name="Wallet"
+                        component={Wallet}
+                        options={{   
+                            tabBarIcon: ({color}) => (
+                              <Image  source={require('../images/icon_wallet.png')} style={{width:25,height:25}}/>
+                            ),
+                            tabBarLabel: <Text style={{fontWeight:'bold', fontSize:14}}>Wallet</Text>  
+                        }}
+            
+            />
+            <Tab.Screen name="BuyAndSell"
+                        component={BuyAndSell}
+                        options={{   
+                            tabBarIcon: ({color}) => (
+                              <MaterialCommunityIcons  name={'home'} color={color} size={25}/>
+                            ),
+                            tabBarLabel: <Text style={{fontWeight:'bold', fontSize:14}}>Wallet</Text>  
+                        }}
+            
+            />
+        </Tab.Navigator>
+    )
+}
 
 function MyStack() {
     return(
@@ -25,7 +65,6 @@ function MyStack() {
                                         headerShown: false,
                                     })
                                 }
-
                 />
                 <Stack.Screen   name="SignUp"
                                 component={SignUp}
@@ -43,8 +82,8 @@ function MyStack() {
                                     })
                                 }
                 />
-                <Stack.Screen   name="Wallet"
-                                component={Wallet}
+                <Stack.Screen   name="MenuNavigator"
+                                component={MyBottomTabNavigator}
                                 options={
                                     ({navigation, route}) => ({
                                         headerShown: false,
