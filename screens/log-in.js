@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, StatusBar, Alert, TouchableOpacity, Image, TextInput} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 import * as firebase from "firebase";
 export default class LogIn extends React.Component {
@@ -13,12 +14,29 @@ export default class LogIn extends React.Component {
     }
 
     componentDidMount() {
+      
+    }
 
+    _handleStoreEmail = async() => {
+        try{
+            await AsyncStorage.setItem('email', this.state.email)
+        }catch(e){
+            Alert.alert(  "Error",
+                          e.message,
+                          [
+                              {
+                                  text:'Ok',
+                                  onPress: () => console.log("Ok Pressed")
+                              }
+                          ]
+            )
+        }
     }
 
     _handleSignUp = () => {
       firebase.auth()
               .signInWithEmailAndPassword(this.state.email, this.state.password)
+              .then( this._handleStoreEmail )
               .then( this._handleNavigation )
               .catch( error => Alert.alert("Error",
                                             error.message,
