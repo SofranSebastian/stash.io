@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, StatusBar, Alert, TouchableOpacity, Image, TextInput, Dimensions, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, StatusBar, Alert, TouchableOpacity, Image, TextInput, Dimensions, ScrollView, RefreshControl} from 'react-native';
 import {
     LineChart,
     BarChart,
@@ -8,6 +8,7 @@ import {
     ContributionGraph,
     StackedBarChart
   } from "react-native-chart-kit";
+  import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 import * as firebase from "firebase";
 
@@ -16,6 +17,7 @@ export default class Wallet extends React.Component {
         super();
 
         this.state = {
+            emailFromUser: "",
             dummyArray:[
                 {
                     id:1,
@@ -43,21 +45,82 @@ export default class Wallet extends React.Component {
                     value: 156.2,
                 },
 
-            ]
+            ],
+            bitcoinData : {
+                percent_1h: 0,
+                percent_24h: 0,
+                percent_7d: 0,
+                percent_30d: 0,
+                percent_60d: 0,
+                percent_90: 0
+            },
+            refresh: false
+        }
+       
+    }
+
+    _handlerGetDataForBitcoinChart = async() => {
+        await fetch("http://ec2-3-66-169-251.eu-central-1.compute.amazonaws.com/", {"method": "GET"})
+        .then( (response) => response.json() )
+        .then((responseData) => this.setState({bitcoinData : {
+                                                                percent_1h: responseData.data[0].quote.USD.percent_change_1h,
+                                                                percent_24h: responseData.data[0].quote.USD.percent_change_24h,
+                                                                percent_7d: responseData.data[0].quote.USD.percent_change_7d,
+                                                                percent_30d: responseData.data[0].quote.USD.percent_change_30d,
+                                                                percent_60d: responseData.data[0].quote.USD.percent_change_60d,
+
+                                                            } 
+                                                }) 
+            )
+        .catch( (error) => console.log(error))
+    }
+
+    _handleGetStoredEmail = async() => {
+        try{
+            const email_value = await AsyncStorage.getItem('email')
+            const email_formatted = email_value.split("@")[0].replace('.','').replace('_','').replace(/\d+/g,'')
+            if(email_formatted !== null){
+                this.setState({emailFromUser:email_formatted})
+            }
+        }catch(e){
+            Alert.alert(  "Error",
+                          e.message,
+                          [
+                              {
+                                  text:'Ok',
+                                  onPress: () => console.log("Ok Pressed")
+                              }
+                          ]
+            )
         }
     }
 
-    componentDidMount() {
+    _onRefresh(){
+        this.setState({refresh: true});
+        this._handlerGetDataForBitcoinChart();
+        this.setState({refresh:false});
+      }
 
+    _handlerLogout = () =>{
+        this.props.navigation.reset({index:0, routes:[{name:"LogIn"}]});
     }
 
+    componentDidMount() {
+        this._handleGetStoredEmail()
+        this._handlerGetDataForBitcoinChart()
+    }
 
     render() {
         return (  
             <View style={styles.container}>
-                <View style={{marginLeft:'5%',marginTop:'5%', width:Dimensions.get("window").width}}>
-                    <Text style={{fontFamily:'normal-font', fontSize:18, color:'white'}}>Hello</Text>
-                    <Text style={{fontFamily:'bold-font', fontSize:26, color:'white', marginTop:"-4%"}}>username</Text>
+                <View style={{flexDirection:'row', width:Dimensions.get("window").width, alignItems:'center'}}>
+                    <View style={{marginLeft:'5%',marginTop:'5%', width:'75%'}}>
+                        <Text style={{fontFamily:'normal-font', fontSize:18, color:'white'}}>Hello</Text>
+                        <Text style={{fontFamily:'bold-font', fontSize:22, color:'white', marginTop:"-4%"}}>{this.state.emailFromUser}</Text>
+                    </View>
+                    <TouchableOpacity style={{ marginLeft:'5%'}} onPress={this._handlerLogout}>
+                        <Image source={require('../images/icon_logout.png')} style={{width:30, height:30}}/>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={{height:200,marginVertical:'5%'}}>
@@ -77,53 +140,68 @@ export default class Wallet extends React.Component {
                     </ScrollView>
                 </View>
 
-                <View style={{justifyContent:'center', alignItems:'center'}}>
+                <ScrollView contentContainerStyle={{justifyContent:'center', alignItems:'center'}}
+                refreshControl={
+                    <RefreshControl
+                    refreshing={this.state.refresh}
+                    onRefresh={this._onRefresh.bind(this)}
+                    />
+                }>
                     <View style={{width:Dimensions.get("window").width-20}}>
                         <Text style={{fontFamily:'bold-font', fontSize:18, color:'white', marginTop:'2%'}}>Bitcoin Chart</Text>
                     </View>
-                    <LineChart
-                        data={{
-                        labels: ["1h", "24h", "7d", "30d", "60d", "90d"],
-                        datasets: [
-                            {
-                            data: [
-                            0.12684,
-                            2.73229,
-                            4.06216,
-                            -4.98554,
-                            0.12503,
-                            26.8709,
+
+                    { this.state.bitcoinData.percent_1h !== 0 ?  
+
+                        <LineChart
+                            data={{
+                            labels: ["60d", "30d", "7d", "24h", "1h" ],
+                            datasets: [
+                                {
+                                data: [
+                                    this.state.bitcoinData.percent_60d,
+                                    this.state.bitcoinData.percent_30d,
+                                    this.state.bitcoinData.percent_7d,
+                                    this.state.bitcoinData.percent_24h,
+                                    this.state.bitcoinData.percent_1h,
+                                ]
+                                }
                             ]
+                            }}
+                            width={Dimensions.get("window").width-20} // from react-native
+                            height={220}
+                            yAxisSuffix="%"
+                            yAxisInterval={1} // optional, defaults to 1
+                            chartConfig={{
+                            backgroundColor: "#303463",
+                            backgroundGradientFrom: "#303463",
+                            backgroundGradientTo: "#272b48",
+                            decimalPlaces: 2, // optional, defaults to 2dp
+                            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                            style: {
+                                borderRadius: 16
+                            },
+                            propsForDots: {
+                                r: "6",
+                                strokeWidth: "2",
+                                stroke: "#272b48"
                             }
-                        ]
-                        }}
-                        width={Dimensions.get("window").width-20} // from react-native
-                        height={220}
-                        yAxisSuffix="%"
-                        yAxisInterval={1} // optional, defaults to 1
-                        chartConfig={{
-                        backgroundColor: "#303463",
-                        backgroundGradientFrom: "#303463",
-                        backgroundGradientTo: "#272b48",
-                        decimalPlaces: 2, // optional, defaults to 2dp
-                        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                        style: {
+                            }}
+                            bezier
+                            style={{
+                            marginVertical: 1,
                             borderRadius: 16
-                        },
-                        propsForDots: {
-                            r: "6",
-                            strokeWidth: "2",
-                            stroke: "#272b48"
-                        }
-                        }}
-                        bezier
-                        style={{
-                        marginVertical: 1,
-                        borderRadius: 16
-                        }}
-                    />
-                    </View>
+                            }}
+                        />
+
+                    :
+                        <View style={{justifyContent:'center', alignItems:'center'}}>
+                            <Text style={{fontFamily:'bold-font', fontSize:18, color:'white', marginTop:'2%'}}>Chart N/A. Couldn't retrieve data.</Text>
+                            <Text style={{fontFamily:'bold-font', fontSize:18, color:'white', marginTop:'2%'}}>Server is down.</Text>
+                        </View>
+                    }
+                    </ScrollView>
             </View>
         );
     }
