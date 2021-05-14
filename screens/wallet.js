@@ -17,35 +17,8 @@ export default class Wallet extends React.Component {
         super();
 
         this.state = {
-            emailFromUser: "",
-            dummyArray:[
-                {
-                    id:1,
-                    fiat: "Bitcoin",
-                    value: 0.01,
-                },
-                {
-                    id:2,
-                    fiat: "Ethereum",
-                    value: 24.4,
-                },
-                {
-                    id:3,
-                    fiat: "USD",
-                    value: 254.34,
-                },
-                {
-                    id:4,
-                    fiat: "DOGE",
-                    value: 12313.2,
-                },
-                {
-                    id:5,
-                    fiat: "LITECOIN",
-                    value: 156.2,
-                },
-
-            ],
+            emailFromUser : "",
+            currenciesData : [],
             bitcoinData : {
                 percent_1h: 0,
                 percent_24h: 0,
@@ -75,6 +48,22 @@ export default class Wallet extends React.Component {
         .catch( (error) => console.log(error))
     }
 
+    _handleGetCurrenciesForUser = () => {
+        firebase.database()
+                .ref('/users')
+                .once('value')
+                .then((snapshot) =>{
+                    var temporary_array = [];
+                    snapshot.forEach( (childSnapshot) => {
+                        if( this.state.emailFromUser === childSnapshot.val().username ){
+                            temporary_array = Object.entries(childSnapshot.val().currencies);
+                            console.log(Object.entries(childSnapshot.val().currencies));
+                        }
+                    })
+                this.setState({currenciesData:temporary_array})
+                })
+    }
+
     _handleGetStoredEmail = async() => {
         try{
             const email_value = await AsyncStorage.getItem('email')
@@ -99,15 +88,22 @@ export default class Wallet extends React.Component {
         this.setState({refresh: true});
         this._handlerGetDataForBitcoinChart();
         this.setState({refresh:false});
-      }
+    }
+
+    _onRefreshCurrencies(){
+        this.setState({refresh: true});
+        this._handleGetCurrenciesForUser();
+        this.setState({refresh:false});
+    }
 
     _handlerLogout = () =>{
         this.props.navigation.reset({index:0, routes:[{name:"LogIn"}]});
     }
 
     componentDidMount() {
-        this._handleGetStoredEmail()
-        this._handlerGetDataForBitcoinChart()
+        this._handleGetStoredEmail();
+        this._handlerGetDataForBitcoinChart();
+        this._handleGetCurrenciesForUser();
     }
 
     render() {
@@ -124,15 +120,22 @@ export default class Wallet extends React.Component {
                 </View>
 
                 <View style={{height:200,marginVertical:'5%'}}>
-                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
+                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} 
+                                refreshControl={
+                                    <RefreshControl
+                                    refreshing={this.state.refresh}
+                                    onRefresh={this._onRefreshCurrencies.bind(this)}
+                                    />
+                                }
+                    >
                                 {
-                                this.state.dummyArray.map((item) => (
-                                        <View key={item.id} style={{height:200, width:125, backgroundColor:'#272b48', marginHorizontal:5, borderRadius:20, alignItems:'center', justifyContent:'center'}}>
+                                this.state.currenciesData.map((item) => (
+                                        <View key={item[1]} style={{height:200, width:125, backgroundColor:'#272b48', marginHorizontal:5, borderRadius:20, alignItems:'center', justifyContent:'center'}}>
                                             <Text style={{color:'#303463', fontSize:28, fontFamily:'normal-font'}}>●</Text>
                                             <Text style={{color:'white', fontSize:14, fontFamily:'normal-font'}}>Fiat:</Text>
-                                            <Text style={{color:'white', fontSize:20, fontFamily:'bold-font'}}>{item.fiat}</Text>
+                                            <Text style={{color:'white', fontSize:20, fontFamily:'bold-font'}}>{item[0]}</Text>
                                             <Text style={{color:'white', fontSize:14, fontFamily:'normal-font'}}>Value:</Text>
-                                            <Text style={{color:'white', fontSize:20, fontFamily:'bold-font'}}>{item.value}</Text>
+                                            <Text style={{color:'white', fontSize:16, fontFamily:'bold-font'}}>{ Number.isInteger(item[1]) ?  item[1] : item[1].toFixed(3)}</Text>
                                             <Text style={{color:'#303463', fontSize:28, fontFamily:'normal-font'}}>●</Text>
                                         </View>
                                     ))
@@ -141,12 +144,13 @@ export default class Wallet extends React.Component {
                 </View>
 
                 <ScrollView contentContainerStyle={{justifyContent:'center', alignItems:'center'}}
-                refreshControl={
-                    <RefreshControl
-                    refreshing={this.state.refresh}
-                    onRefresh={this._onRefresh.bind(this)}
-                    />
-                }>
+                            refreshControl={
+                                <RefreshControl
+                                refreshing={this.state.refresh}
+                                onRefresh={this._onRefresh.bind(this)}
+                                />
+                            }
+                >
                     <View style={{width:Dimensions.get("window").width-20}}>
                         <Text style={{fontFamily:'bold-font', fontSize:18, color:'white', marginTop:'2%'}}>Bitcoin Chart</Text>
                     </View>

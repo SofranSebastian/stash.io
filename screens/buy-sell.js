@@ -130,11 +130,11 @@ export default class BuyAndSell extends React.Component {
                                                         fontFamily:'normal-font'
                                                     }}
                                                 keyboardType="numeric"
-                                                onChangeText={ value => this.setState({calculatedAmountForBuy:value/50000})}
+                                                onChangeText={ sum => this.setState({calculatedAmountForBuy:sum/50000})}
                                                 value={this.state.calculatedAmountForBuy}
                                         />
                                     </View>
-                                    <Text style={{color:'BLACK', fontSize:15, fontFamily:'bold-font'}}>{this.state.calculatedAmountForBuy}</Text>
+                                    <Text style={{color:'black', fontSize:15, fontFamily:'bold-font'}}>{this.state.calculatedAmountForBuy}</Text>
                             </View>
                             <View style={{flexDirection:'row', width:'75%', justifyContent:'space-around',flex:0.2, alignItems:'center'}}>
                                 <TouchableOpacity   style={{height:40, width:80, backgroundColor:"#1a6594", borderRadius:5, alignItems:'center', justifyContent:'center'}}

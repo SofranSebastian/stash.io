@@ -27,7 +27,8 @@ export default class SignUp extends React.Component {
                                             onPress: this._handleNavigation
                                             }
                                         ]
-                            )
+                            ),
+                            this._handlerAddUserToDatabase()
                     )
               .catch( error => Alert.alert("Error",
                                             error.message,
@@ -45,6 +46,34 @@ export default class SignUp extends React.Component {
 
                               )
                     )
+    }
+
+    _handlerAddUserToDatabase = () => {
+        const email_formatted = this.state.email.split("@")[0].replace('.','').replace('_','').replace(/\d+/g,'')
+        const entry_path = "/" + email_formatted;
+        firebase.database()
+                .ref('/users').child(entry_path).set({
+                    username: email_formatted,
+                    currencies:{
+                        USD: 1000,
+                    }
+                })
+                .catch( function (error) {
+                    Alert.alert("Error",
+                                error.message,
+                                [
+                                    {
+                                        text:'Ok',
+                                        onPress: () => console.log("Ok Pressed")
+                                    },
+                                    {
+                                        text:'Try Again',
+                                        onPress: () => console.log("Try Again Pressed"),
+                                        style: 'cancel'
+                                    }
+                                ]
+                            )
+                })
     }
 
     _handleNavigation = () =>{
