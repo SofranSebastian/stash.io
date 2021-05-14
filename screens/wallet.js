@@ -128,7 +128,7 @@ export default class Wallet extends React.Component {
                     >
                                 {
                                 this.state.currenciesData.map((item) => (
-                                        <View key={item.id} style={{height:200, width:125, backgroundColor:'#272b48', marginHorizontal:5, borderRadius:20, alignItems:'center', justifyContent:'center'}}>
+                                        <View key={item[1]} style={{height:200, width:125, backgroundColor:'#272b48', marginHorizontal:5, borderRadius:20, alignItems:'center', justifyContent:'center'}}>
                                             <Text style={{color:'#303463', fontSize:28, fontFamily:'normal-font'}}>●</Text>
                                             <Text style={{color:'white', fontSize:14, fontFamily:'normal-font'}}>Fiat:</Text>
                                             <Text style={{color:'white', fontSize:20, fontFamily:'bold-font'}}>{item[0]}</Text>
