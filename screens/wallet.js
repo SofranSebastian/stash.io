@@ -55,8 +55,10 @@ export default class Wallet extends React.Component {
                 .then((snapshot) =>{
                     var temporary_array = [];
                     snapshot.forEach( (childSnapshot) => {
-                        temporary_array = Object.entries(childSnapshot.val().currencies);
-                        console.log(Object.entries(childSnapshot.val().currencies));
+                        if( this.state.emailFromUser === childSnapshot.val().username ){
+                            temporary_array = Object.entries(childSnapshot.val().currencies);
+                            console.log(Object.entries(childSnapshot.val().currencies));
+                        }
                     })
                 this.setState({currenciesData:temporary_array})
                 })
