@@ -130,7 +130,7 @@ export default class BuyAndSell extends React.Component {
                                                         fontFamily:'normal-font'
                                                     }}
                                                 keyboardType="numeric"
-                                                onChangeText={ value => this.setState({calculatedAmountForBuy:value/50000})}
+                                                onChangeText={ sum => this.setState({calculatedAmountForBuy:sum/50000})}
                                                 value={this.state.calculatedAmountForBuy}
                                         />
                                     </View>
