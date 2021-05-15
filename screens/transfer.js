@@ -267,7 +267,7 @@ export default class Transfer extends React.Component {
                     />
                     <View style={{backgroundColor:'#272b48', flexDirection:'column', borderRadius:10, alignItems:'center', height:50, width:'32%', marginTop:'3%', marginLeft:"3%", justifyContent:'center'}}>
                         <Text style={{color:'white', fontSize:13, fontFamily:'bold-font', textAlign:'center'}}>SOLD</Text>
-                        <Text style={{color:'white', fontSize:13, fontFamily:'bold-font', textAlign:'center'}}>{this.state.chosenCurrencyValue}</Text>
+                        <Text style={{color:'white', fontSize:13, fontFamily:'bold-font', textAlign:'center'}}>{this.state.chosenCurrencyValue.toFixed(3)}</Text>
                     </View>
                 </View>
                 <View style={{position:'absolute', top:'75%', width:'90%', marginHorizontal:"5%" }}>
