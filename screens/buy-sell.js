@@ -130,6 +130,29 @@ export default class BuyAndSell extends React.Component {
         }
     }
 
+    _onSellPressHandler(cryptoName, cryptoValue){
+        this.setState({ isModalForSellVisible:true, 
+                        cryptoSelected:cryptoName, 
+                        cryptoSelectedValue:cryptoValue,
+                    })
+        for ( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+            if(this.state.currenciesData[i].label === cryptoName){
+                this.setState({ chosenCurrencyValue:this.state.currenciesData[i].value})
+            }
+        }
+
+        if(cryptoName === 'Bitcoin'){ this.setState({chosenCurrencySymbol:'BTC' })}
+        if(cryptoName === 'Ethereum'){ this.setState({chosenCurrencySymbol:'ETH' })}
+        if(cryptoName === 'BinanceCoin'){ this.setState({chosenCurrencySymbol:'BNB' })}
+        if(cryptoName === 'Tether'){ this.setState({chosenCurrencySymbol:'USDT' })}
+        if(cryptoName === 'Dogecoin'){ this.setState({chosenCurrencySymbol:'DOGE' })}
+        if(cryptoName === 'Cardano'){ this.setState({chosenCurrencySymbol:'ADA' })}
+        if(cryptoName === 'XRP'){ this.setState({chosenCurrencySymbol:'XRP' })}
+        if(cryptoName === 'Polkadot'){ this.setState({chosenCurrencySymbol:'DOT' })}
+        if(cryptoName === 'InternetComputer'){ this.setState({chosenCurrencySymbol:'ICP' })}
+        if(cryptoName === 'BictoinCash'){ this.setState({chosenCurrencySymbol:'BCH' })}
+    }
+    
     _onConfirmBuy = () => {
         if(this.state.amountEntered > this.state.chosenCurrencyValue){
             Alert.alert("Error",
@@ -429,7 +452,7 @@ export default class BuyAndSell extends React.Component {
             }
         }
     }
-    
+
     componentDidMount() {
         
         this._handleGetUSDFromUser()
