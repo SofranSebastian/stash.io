@@ -185,35 +185,37 @@ export default class Transfer extends React.Component {
                         let value_me = 0
 
                         if(this.state.chosenCurrency === 'USD'){
-
                             value = Number(this.state.oldCurrenciesData.USD) +  Number(this.state.amountEntered)
                             value_me = this.state.chosenCurrencyValue - this.state.amountEntered
-                         
+                            firebase.database().ref(path).update({USD: value})
+                            firebase.database().ref(path_me).update({USD: value_me})
+                            Alert.alert("Success!","The transaction is done.",[
+                                                                                {
+                                                                                    text:'Ok',
+                                                                                    onPress: () => console.log("Ok Pressed"),
+                                                                                }
+                                                                            ]
+                                        )
+                            this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
+                        }
 
-                            firebase.database()
-                                    .ref(path)
-                                    .update({
-                                        USD: value
-                                    })
-
-                            firebase.database()
-                                    .ref(path_me)
-                                    .update({
-                                        USD: value_me
-                                    })
+                        if(this.state.chosenCurrency === 'Bitcoin'){
+                            value = Number(this.state.oldCurrenciesData.Bitcoin) +  Number(this.state.amountEntered)
+                            value_me = this.state.chosenCurrencyValue - this.state.amountEntered
+                            firebase.database().ref(path).update({Bictoin: value})
+                            firebase.database().ref(path_me).update({Bitcoin: value_me})
+                            Alert.alert("Success!","The transaction is done.",[
+                                                                                {
+                                                                                    text:'Ok',
+                                                                                    onPress: () => console.log("Ok Pressed"),
+                                                                                }
+                                                                            ]
+                                        )
+                            this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
                         }
                             
 
-                            Alert.alert("Success!",
-                                "The transaction is done.",
-                                [
-                                    {
-                                        text:'Ok',
-                                        onPress: () => console.log("Ok Pressed"),
-                                    }
-                                ]
-                            )
-                            this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
+                            
     }
 
     render() {
@@ -310,7 +312,6 @@ export default class Transfer extends React.Component {
                             <View style={{flex:0.6, width:'100%', alignItems:'center'}}>
                                 <Text>TO : {this.state.usernameEntered}</Text>
                                 <Text>AMOUNT : {this.state.amountEntered}</Text>
-                                <Text>AMOUNT : {this.state.oldCurrenciesData.USD}</Text>
                             </View>
                             <View style={{flexDirection:'row', width:'75%', justifyContent:'space-around',flex:0.2, alignItems:'center'}}>
                                 <TouchableOpacity   style={{height:40, width:80, backgroundColor:"#1a6594", borderRadius:5, alignItems:'center', justifyContent:'center'}}
