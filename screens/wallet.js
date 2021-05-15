@@ -132,10 +132,10 @@ export default class Wallet extends React.Component {
                                 this.state.currenciesData.map((item) => (
                                         <View key={item[1]} style={{height:200, width:125, backgroundColor:'#272b48', marginHorizontal:5, borderRadius:20, alignItems:'center', justifyContent:'center'}}>
                                             <Text style={{color:'#303463', fontSize:28, fontFamily:'normal-font'}}>●</Text>
-                                            <Text style={{color:'white', fontSize:14, fontFamily:'normal-font'}}>Fiat:</Text>
-                                            <Text style={{color:'white', fontSize:20, fontFamily:'bold-font'}}>{item[0]}</Text>
-                                            <Text style={{color:'white', fontSize:14, fontFamily:'normal-font'}}>Value:</Text>
-                                            <Text style={{color:'white', fontSize:16, fontFamily:'bold-font'}}>{ Number.isInteger(item[1]) ?  item[1] : item[1].toFixed(3)}</Text>
+                                            <Text style={{color:'white', fontSize:14, fontFamily:'light-font'}}>Fiat:</Text>
+                                            <Text style={{color:'white', fontSize:14, fontFamily:'bold-font'}}>{item[0]}</Text>
+                                            <Text style={{color:'white', fontSize:14, fontFamily:'light-font'}}>Value:</Text>
+                                            <Text style={{color:'white', fontSize:14, fontFamily:'bold-font'}}>{ Number.isInteger(item[1]) ?  item[1] : item[1].toFixed(3)}</Text>
                                             <Text style={{color:'#303463', fontSize:28, fontFamily:'normal-font'}}>●</Text>
                                         </View>
                                     ))
