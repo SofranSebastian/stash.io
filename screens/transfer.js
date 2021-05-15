@@ -198,11 +198,14 @@ export default class Transfer extends React.Component {
                                         )
                             this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
                         }
-
                         if(this.state.chosenCurrency === 'Bitcoin'){
-                            value = Number(this.state.oldCurrenciesData.Bitcoin) +  Number(this.state.amountEntered)
+                            if(isNaN(this.state.oldCurrenciesData.Bitcoin)){
+                                value = Number(this.state.amountEntered)
+                            }else{
+                                value = Number(this.state.oldCurrenciesData.Bitcoin) +  Number(this.state.amountEntered)
+                            }
                             value_me = this.state.chosenCurrencyValue - this.state.amountEntered
-                            firebase.database().ref(path).update({Bictoin: value})
+                            firebase.database().ref(path).update({Bitcoin: value})
                             firebase.database().ref(path_me).update({Bitcoin: value_me})
                             Alert.alert("Success!","The transaction is done.",[
                                                                                 {
@@ -213,6 +216,43 @@ export default class Transfer extends React.Component {
                                         )
                             this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
                         }
+                        if(this.state.chosenCurrency === 'Ethereum'){
+                            if(isNaN(this.state.oldCurrenciesData.Ethereum)){
+                                value = Number(this.state.amountEntered)
+                            }else{
+                                value = Number(this.state.oldCurrenciesData.Ethereum) +  Number(this.state.amountEntered)
+                            }
+                            value_me = this.state.chosenCurrencyValue - this.state.amountEntered
+                            firebase.database().ref(path).update({Ethereum: value})
+                            firebase.database().ref(path_me).update({Ethereum: value_me})
+                            Alert.alert("Success!","The transaction is done.",[
+                                                                                {
+                                                                                    text:'Ok',
+                                                                                    onPress: () => console.log("Ok Pressed"),
+                                                                                }
+                                                                            ]
+                                        )
+                            this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
+                        }
+                        if(this.state.chosenCurrency === 'BinanceCoin'){
+                            if(isNaN(this.state.oldCurrenciesData.BinanceCoin)){
+                                value = Number(this.state.amountEntered)
+                            }else{
+                                value = Number(this.state.oldCurrenciesData.BinanceCoin) +  Number(this.state.amountEntered)
+                            }
+                            value_me = this.state.chosenCurrencyValue - this.state.amountEntered
+                            firebase.database().ref(path).update({BinanceCoin: value})
+                            firebase.database().ref(path_me).update({BinanceCoin: value_me})
+                            Alert.alert("Success!","The transaction is done.",[
+                                                                                {
+                                                                                    text:'Ok',
+                                                                                    onPress: () => console.log("Ok Pressed"),
+                                                                                }
+                                                                            ]
+                                        )
+                            this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
+                        }
+                        
                             
 
                             
