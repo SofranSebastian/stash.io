@@ -279,7 +279,157 @@ export default class BuyAndSell extends React.Component {
             }
         }   
     }
+    _onConfirmSell = () => {
+        if(this.state.amountEntered > this.state.chosenCurrencyValue){
+            Alert.alert("Error",
+                                "The amount is bigger than what you have.",
+                                [
+                                    {
+                                        text:'Try Again',
+                                        onPress: () => console.log("Try Again Pressed"),
+                                        style: 'cancel'
+                                    }
+                                ]
+                            )
+        }else{
 
+            let path_buy = '/users/' + this.state.emailFromUser + '/currencies'
+            let value_sell = Number(this.state.amountEntered*this.state.cryptoSelectedValue)
+            let value_decrease = Number(this.state.chosenCurrencyValue) - Number(this.state.amountEntered)
+
+            if(this.state.cryptoSelected === 'Bitcoin'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'USD'){
+                        value_sell = Number(this.state.currenciesData[i].value) + value_sell
+                    }
+                }
+                firebase.database().ref(path_buy).update({  Bitcoin : Number(value_decrease.toFixed(3)),
+                                                            USD : value_sell })
+                Alert.alert("Success!","The purchase is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'Ethereum'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'USD'){
+                        value_sell = Number(this.state.currenciesData[i].value) + value_sell
+                    }
+                }
+                firebase.database().ref(path_buy).update({  Ethereum : Number(value_decrease.toFixed(3)),
+                                                            USD : value_sell })
+                Alert.alert("Success!","The sell is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'BinanceCoin'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'USD'){
+                        value_sell = Number(this.state.currenciesData[i].value) + value_sell
+                    }
+                }
+                firebase.database().ref(path_buy).update({  BinanceCoin : Number(value_decrease.toFixed(3)),
+                                                            USD : value_sell })
+                Alert.alert("Success!","The sell is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'Tether'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'USD'){
+                        value_sell = Number(this.state.currenciesData[i].value) + value_sell
+                    }
+                }
+                firebase.database().ref(path_buy).update({  Tether : Number(value_decrease.toFixed(3)),
+                                                            USD : value_sell })
+                Alert.alert("Success!","The sell is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'Dogecoin'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'USD'){
+                        value_sell = Number(this.state.currenciesData[i].value) + value_sell
+                    }
+                }
+                firebase.database().ref(path_buy).update({  Dogecoin : Number(value_decrease.toFixed(3)),
+                                                            USD : value_sell })
+                Alert.alert("Success!","The sell is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'Cardano'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'USD'){
+                        value_sell = Number(this.state.currenciesData[i].value) + value_sell
+                    }
+                }
+                firebase.database().ref(path_buy).update({  Cardano : Number(value_decrease.toFixed(3)),
+                                                            USD : value_sell })
+                Alert.alert("Success!","The sell is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'XRP'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'USD'){
+                        value_sell = Number(this.state.currenciesData[i].value) + value_sell
+                    }
+                }
+                firebase.database().ref(path_buy).update({  XRP : Number(value_decrease.toFixed(3)),
+                                                            USD : value_sell })
+                Alert.alert("Success!","The sell is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'Polkadot'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'USD'){
+                        value_sell = Number(this.state.currenciesData[i].value) + value_sell
+                    }
+                }
+                firebase.database().ref(path_buy).update({  Polkadot : Number(value_decrease.toFixed(3)),
+                                                            USD : value_sell })
+                Alert.alert("Success!","The sell is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'InternetComputer'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'USD'){
+                        value_sell = Number(this.state.currenciesData[i].value) + value_sell
+                    }
+                }
+                firebase.database().ref(path_buy).update({  InternetComputer : Number(value_decrease.toFixed(3)),
+                                                            USD : value_sell })
+                Alert.alert("Success!","The sell is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'BitcoinCash'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'USD'){
+                        value_sell = Number(this.state.currenciesData[i].value) + value_sell
+                    }
+                }
+                firebase.database().ref(path_buy).update({  BitcoinCash : Number(value_decrease.toFixed(3)),
+                                                            USD : value_sell })
+                Alert.alert("Success!","The sell is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+        }
+    }
+    
     componentDidMount() {
         
         this._handleGetUSDFromUser()
