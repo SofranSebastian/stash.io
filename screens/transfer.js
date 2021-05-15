@@ -462,7 +462,7 @@ export default class Transfer extends React.Component {
                                     backgroundColor:'#000000000000',
                     }}>
                         <View style={{  backgroundColor: "#00a0d4",
-                                        flex:0.8,
+                                        flex:0.4,
                                         width: '90%',
                                         borderRadius:10,
                                         alignItems:'center',
@@ -470,11 +470,9 @@ export default class Transfer extends React.Component {
                             }}>
                             <View style={{flex:0.2, justifyContent:'center', alignItems:'center',marginTop:'5%'}}>
                                     <Image source={require('../images/icon_logo.png')} style={{width:50, height:50}}/>
-                                    <Text style={{color:'white', fontSize:24, fontFamily:'bold-font', marginTop:'5%'}}>BUY & HODL</Text>
                             </View>
-                            <View style={{flex:0.6, width:'100%', alignItems:'center'}}>
-                                <Text>TO : {this.state.usernameEntered}</Text>
-                                <Text>AMOUNT : {this.state.amountEntered}</Text>
+                            <View style={{flex:0.6, width:'100%', alignItems:'center', justifyContent:'center'}}>
+                                <Text style={{color:'white', fontSize:12, fontFamily:'bold-font', textAlign:'center', marginHorizontal:'5%'}}>*Please confirm the desired transfer only when you are sure that the data entered is suitable for the recipient.*</Text>
                             </View>
                             <View style={{flexDirection:'row', width:'75%', justifyContent:'space-around',flex:0.2, alignItems:'center'}}>
                                 <TouchableOpacity   style={{height:40, width:80, backgroundColor:"#1a6594", borderRadius:5, alignItems:'center', justifyContent:'center'}}
