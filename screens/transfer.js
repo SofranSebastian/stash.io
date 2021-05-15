@@ -252,7 +252,132 @@ export default class Transfer extends React.Component {
                                         )
                             this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
                         }
-                        
+                        if(this.state.chosenCurrency === 'Tether'){
+                            if(isNaN(this.state.oldCurrenciesData.Tether)){
+                                value = Number(this.state.amountEntered)
+                            }else{
+                                value = Number(this.state.oldCurrenciesData.Tether) +  Number(this.state.amountEntered)
+                            }
+                            value_me = this.state.chosenCurrencyValue - this.state.amountEntered
+                            firebase.database().ref(path).update({Tether: value})
+                            firebase.database().ref(path_me).update({Tether: value_me})
+                            Alert.alert("Success!","The transaction is done.",[
+                                                                                {
+                                                                                    text:'Ok',
+                                                                                    onPress: () => console.log("Ok Pressed"),
+                                                                                }
+                                                                            ]
+                                        )
+                            this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
+                        }
+                        if(this.state.chosenCurrency === 'Dogecoin'){
+                            if(isNaN(this.state.oldCurrenciesData.Dogecoin)){
+                                value = Number(this.state.amountEntered)
+                            }else{
+                                value = Number(this.state.oldCurrenciesData.Dogecoin) +  Number(this.state.amountEntered)
+                            }
+                            value_me = this.state.chosenCurrencyValue - this.state.amountEntered
+                            firebase.database().ref(path).update({Dogecoin: value})
+                            firebase.database().ref(path_me).update({Dogecoin: value_me})
+                            Alert.alert("Success!","The transaction is done.",[
+                                                                                {
+                                                                                    text:'Ok',
+                                                                                    onPress: () => console.log("Ok Pressed"),
+                                                                                }
+                                                                            ]
+                                        )
+                            this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
+                        }
+                        if(this.state.chosenCurrency === 'Cardano'){
+                            if(isNaN(this.state.oldCurrenciesData.Cardano)){
+                                value = Number(this.state.amountEntered)
+                            }else{
+                                value = Number(this.state.oldCurrenciesData.Cardano) +  Number(this.state.amountEntered)
+                            }
+                            value_me = this.state.chosenCurrencyValue - this.state.amountEntered
+                            firebase.database().ref(path).update({Cardano: value})
+                            firebase.database().ref(path_me).update({Cardano: value_me})
+                            Alert.alert("Success!","The transaction is done.",[
+                                                                                {
+                                                                                    text:'Ok',
+                                                                                    onPress: () => console.log("Ok Pressed"),
+                                                                                }
+                                                                            ]
+                                        )
+                            this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
+                        }
+                        if(this.state.chosenCurrency === 'XRP'){
+                            if(isNaN(this.state.oldCurrenciesData.XRP)){
+                                value = Number(this.state.amountEntered)
+                            }else{
+                                value = Number(this.state.oldCurrenciesData.XRP) +  Number(this.state.amountEntered)
+                            }
+                            value_me = this.state.chosenCurrencyValue - this.state.amountEntered
+                            firebase.database().ref(path).update({XRP: value})
+                            firebase.database().ref(path_me).update({XRP: value_me})
+                            Alert.alert("Success!","The transaction is done.",[
+                                                                                {
+                                                                                    text:'Ok',
+                                                                                    onPress: () => console.log("Ok Pressed"),
+                                                                                }
+                                                                            ]
+                                        )
+                            this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
+                        }
+                        if(this.state.chosenCurrency === 'Polkadot'){
+                            if(isNaN(this.state.oldCurrenciesData.Polkadot)){
+                                value = Number(this.state.amountEntered)
+                            }else{
+                                value = Number(this.state.oldCurrenciesData.Polkadot) +  Number(this.state.amountEntered)
+                            }
+                            value_me = this.state.chosenCurrencyValue - this.state.amountEntered
+                            firebase.database().ref(path).update({Polkadot: value})
+                            firebase.database().ref(path_me).update({Polkadot: value_me})
+                            Alert.alert("Success!","The transaction is done.",[
+                                                                                {
+                                                                                    text:'Ok',
+                                                                                    onPress: () => console.log("Ok Pressed"),
+                                                                                }
+                                                                            ]
+                                        )
+                            this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
+                        }
+                        if(this.state.chosenCurrency === 'InternetComputer'){
+                            if(isNaN(this.state.oldCurrenciesData.InternetComputer)){
+                                value = Number(this.state.amountEntered)
+                            }else{
+                                value = Number(this.state.oldCurrenciesData.InternetComputer) +  Number(this.state.amountEntered)
+                            }
+                            value_me = this.state.chosenCurrencyValue - this.state.amountEntered
+                            firebase.database().ref(path).update({InternetComputer: value})
+                            firebase.database().ref(path_me).update({InternetComputer: value_me})
+                            Alert.alert("Success!","The transaction is done.",[
+                                                                                {
+                                                                                    text:'Ok',
+                                                                                    onPress: () => console.log("Ok Pressed"),
+                                                                                }
+                                                                            ]
+                                        )
+                            this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
+                        }
+                        if(this.state.chosenCurrency === 'BitcoinCash'){
+                            if(isNaN(this.state.oldCurrenciesData.BitcoinCash)){
+                                value = Number(this.state.amountEntered)
+                            }else{
+                                value = Number(this.state.oldCurrenciesData.BitcoinCash) +  Number(this.state.amountEntered)
+                            }
+                            value_me = this.state.chosenCurrencyValue - this.state.amountEntered
+                            firebase.database().ref(path).update({BitcoinCash: value})
+                            firebase.database().ref(path_me).update({BitcoinCash: value_me})
+                            Alert.alert("Success!","The transaction is done.",[
+                                                                                {
+                                                                                    text:'Ok',
+                                                                                    onPress: () => console.log("Ok Pressed"),
+                                                                                }
+                                                                            ]
+                                        )
+                            this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
+                        }
                             
 
                             
