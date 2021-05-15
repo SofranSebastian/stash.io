@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, StatusBar, Alert, TouchableOpacity, Image, TextInput, Dimensions, ScrollView, RefreshControl, Modal} from 'react-native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import * as firebase from "firebase";
 
 const dummyData = require('../data.json')
@@ -15,7 +15,91 @@ export default class BuyAndSell extends React.Component {
             isModalForBuyVisible: false,
             isModalForSellVisible: false,
             calculatedAmountForBuy: 0,
+            cryptoSelected: '',
+            cryptoSelectedValue: 0,
+            emailFromUser: '',
+            currenciesData:[],
+            chosenCurrency: '',
+            chosenCurrencyValue: 0,
+            amountEntered: 0,
+            oldValueCryptoForBuy: 0,
         }
+    }
+
+    _handleGetStoredEmail = async() => {
+        try{
+            const email_value = await AsyncStorage.getItem('email')
+            const email_formatted = email_value.split("@")[0].replace('.','').replace('_','').replace(/\d+/g,'')
+            if(email_formatted !== null){
+                this.setState({emailFromUser:email_formatted})
+            }
+        }catch(e){
+            Alert.alert(  "Error",
+                          e.message,
+                          [
+                              {
+                                  text:'Ok',
+                                  onPress: () => console.log("Ok Pressed")
+                              }
+                          ]
+            )
+        }
+    }
+
+    _handleGetUSDFromUser = () =>{
+        firebase.database()
+        .ref('/users')
+        .once('value')
+        .then((snapshot) =>{
+
+            var temporary_object = {};
+
+            snapshot.forEach( (childSnapshot) => {
+
+                if( childSnapshot.val().username === this.state.emailFromUser ){
+                    temporary_object = childSnapshot.val().currencies.USD
+                }
+            })
+            this.setState({chosenCurrencyValue:temporary_object})
+        })
+    }
+
+
+    _handleGetAllCurrenciesFromUser = () =>{
+        firebase.database()
+        .ref('/users')
+        .once('value')
+        .then((snapshot) =>{
+
+            let temporary_array = [];
+
+            let temporary_label = '';
+            let temporary_value = '';
+
+            snapshot.forEach( (childSnapshot) => {
+
+                if( childSnapshot.val().username === this.state.emailFromUser ){
+                    let entries = Object.entries(childSnapshot.val().currencies)
+                   
+                    for( let i = 0 ; i < entries.length ; i++ ){
+
+                        let temporary_item_object = {
+                            label: '',
+                            value: '',
+                        }
+
+                        temporary_label = entries[i][0];
+                        temporary_value = entries[i][1];
+
+                        temporary_item_object.label = temporary_label;
+                        temporary_item_object.value = temporary_value;
+
+                        temporary_array.push(temporary_item_object);
+                    } 
+                }
+            })
+            this.setState({currenciesData:temporary_array})
+        })
     }
 
     _handlerGetDataForTopTen = async() => {
@@ -31,12 +115,174 @@ export default class BuyAndSell extends React.Component {
         this.setState({refresh:false});
       }
 
-    _onBuyPressHandler = () => {
-        this.setState({isModalForBuyVisible:true})
+    _onBuyPressHandler(cryptoName, cryptoValue){
+        this.setState({ isModalForBuyVisible:true, 
+                        cryptoSelected:cryptoName, 
+                        cryptoSelectedValue:cryptoValue,
+                    })
+    }
+
+    _onConfirmBuy = () => {
+        if(this.state.amountEntered > this.state.chosenCurrencyValue){
+            Alert.alert("Error",
+                                "The amount is bigger than what you have.",
+                                [
+                                    {
+                                        text:'Try Again',
+                                        onPress: () => console.log("Try Again Pressed"),
+                                        style: 'cancel'
+                                    }
+                                ]
+                            )
+        }else{
+
+            let path_buy = '/users/' + this.state.emailFromUser + '/currencies'
+            let value_buy = Number(this.state.amountEntered/this.state.cryptoSelectedValue)
+            let value_decrease = Number(this.state.chosenCurrencyValue) - Number(this.state.amountEntered)
+            if(this.state.cryptoSelected === 'Bitcoin'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'Bitcoin'){
+                        value_buy = value_buy + Number(this.state.currenciesData[i].value)
+                    }
+                }
+                firebase.database().ref(path_buy).update({  Bitcoin : Number(value_buy.toFixed(3)),
+                                                            USD : value_decrease })
+                Alert.alert("Success!","The purchase is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'Ethereum'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'Ethereum'){
+                        value_buy = value_buy + Number(this.state.currenciesData[i].value)
+                    }
+                }
+                firebase.database().ref(path_buy).update({  Ethereum : Number(value_buy.toFixed(3)),
+                                                            USD : value_decrease })
+                Alert.alert("Success!","The purchase is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'BinanceCoin'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'BinanceCoin'){
+                        value_buy = value_buy + Number(this.state.currenciesData[i].value)
+                    }
+                }
+                firebase.database().ref(path_buy).update({  BinanceCoin : Number(value_buy.toFixed(3)),
+                                                            USD : value_decrease })
+                Alert.alert("Success!","The purchase is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'Tether'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'Tether'){
+                        value_buy = value_buy + Number(this.state.currenciesData[i].value)
+                    }
+                }
+                firebase.database().ref(path_buy).update({  Tether : Number(value_buy.toFixed(3)),
+                                                            USD : value_decrease })
+                Alert.alert("Success!","The purchase is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'Dogecoin'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'Dogecoin'){
+                        value_buy = value_buy + Number(this.state.currenciesData[i].value)
+                    }
+                }
+                firebase.database().ref(path_buy).update({  Dogecoin : Number(value_buy.toFixed(3)),
+                                                            USD : value_decrease })
+                Alert.alert("Success!","The purchase is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'Cardano'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'Cardano'){
+                        value_buy = value_buy + Number(this.state.currenciesData[i].value)
+                    }
+                }
+                firebase.database().ref(path_buy).update({  Cardano : Number(value_buy.toFixed(3)),
+                                                            USD : value_decrease })
+                Alert.alert("Success!","The purchase is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'XRP'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'XRP'){
+                        value_buy = value_buy + Number(this.state.currenciesData[i].value)
+                    }
+                }
+                firebase.database().ref(path_buy).update({  XRP : Number(value_buy.toFixed(3)),
+                                                            USD : value_decrease })
+                Alert.alert("Success!","The purchase is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'Polkadot'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'Polkadot'){
+                        value_buy = value_buy + Number(this.state.currenciesData[i].value)
+                    }
+                }
+                firebase.database().ref(path_buy).update({  Polkadot : Number(value_buy.toFixed(3)),
+                                                            USD : value_decrease })
+                Alert.alert("Success!","The purchase is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'InternetComputer'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'InternetComputer'){
+                        value_buy = value_buy + Number(this.state.currenciesData[i].value)
+                    }
+                }
+                firebase.database().ref(path_buy).update({  InternetComputer : Number(value_buy.toFixed(3)),
+                                                            USD : value_decrease })
+                Alert.alert("Success!","The purchase is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+            if(this.state.cryptoSelected === 'BitcoinCash'){
+                for( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
+                    if(this.state.currenciesData[i].label === 'BitcoinCash'){
+                        value_buy = value_buy + Number(this.state.currenciesData[i].value)
+                    }
+                }
+                firebase.database().ref(path_buy).update({  BinanceCoin : Number(value_buy.toFixed(3)),
+                                                            USD : value_decrease })
+                Alert.alert("Success!","The purchase is done.",[
+                                                                {text:'Ok',onPress: () => console.log("Ok Pressed"),}
+                                                            ])
+                this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+            }
+
+            
+        
+        }
+
+        
     }
 
     componentDidMount() {
+        
+        this._handleGetUSDFromUser()
         this._handlerGetDataForTopTen()
+        this._handleGetStoredEmail()
+        this._handleGetAllCurrenciesFromUser()
     }
 
 
@@ -84,11 +330,12 @@ export default class BuyAndSell extends React.Component {
                                                 </View>
                                                 <View style={{flexDirection:'row', width:'100%', alignItems:'center', justifyContent:'space-evenly'}}>
                                                     <TouchableOpacity style={{height:30, width:80, backgroundColor:"#39b54a", borderRadius:5, alignItems:'center', justifyContent:'center'}}
-                                                                        onPress={this._onBuyPressHandler}
+                                                                        onPress={()=>this._onBuyPressHandler(item.name.replace(/\s+/g, ''), item.quote.USD.price.toFixed(1))}
                                                     >
                                                         <Text style={{color:'white', fontSize:14, fontFamily:'bold-font'}}>BUY</Text>
                                                     </TouchableOpacity>
-                                                    <TouchableOpacity style={{height:30, width:80, backgroundColor:'#ff0000', borderRadius:5, alignItems:'center', justifyContent:'center'}}>
+                                                    <TouchableOpacity style={{height:30, width:80, backgroundColor:'#ff0000', borderRadius:5, alignItems:'center', justifyContent:'center'}}
+                                                    >
                                                         <Text style={{color:'white', fontSize:12, fontFamily:'bold-font'}}>SELL</Text>
                                                     </TouchableOpacity>
                                                 </View>
@@ -116,29 +363,36 @@ export default class BuyAndSell extends React.Component {
                             }}>
                             <View style={{flex:0.2, justifyContent:'center', alignItems:'center',marginTop:'5%'}}>
                                     <Image source={require('../images/icon_logo.png')} style={{width:50, height:50}}/>
-                                    <Text style={{color:'white', fontSize:24, fontFamily:'bold-font', marginTop:'5%'}}>BUY & HODL</Text>
                             </View>
                             <View style={{flex:0.6, width:'100%', alignItems:'center'}}>
-                                    <View style={{backgroundColor:'black', flexDirection:'row', borderRadius:10, alignItems:'center', height:50, width:'90%', marginTop:'3%'}}>
-                                    <TextInput  placeholder="Your amount"
-                                                placeholderTextColor='white'
-                                                autoCapitalize="none"
-                                                style={{  color:'white',
-                                                        width:'90%',
-                                                        marginHorizontal:'5%',
-                                                        fontSize:14,
-                                                        fontFamily:'normal-font'
-                                                    }}
-                                                keyboardType="numeric"
-                                                onChangeText={ sum => this.setState({calculatedAmountForBuy:sum/50000})}
-                                                value={this.state.calculatedAmountForBuy}
-                                        />
+                                    <View style={{width:'90%', marginHorizontal:'5%', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+                                        <View style={{backgroundColor:'#272b48', flexDirection:'row', borderRadius:10, alignItems:'center', height:50}}>
+                                            <TextInput  placeholder="Enter your amount"
+                                                        placeholderTextColor='white'
+                                                        autoCapitalize="none"
+                                                        style={{  color:'white',
+                                                                width:'65%',
+                                                                fontSize:14,
+                                                                marginLeft:'2%',
+                                                                fontFamily:'normal-font',
+                                                            }}
+                                                        keyboardType="numeric"
+                                                        onChangeText={ amount => this.setState({amountEntered:amount})}
+                                                        value={this.state.amountEntered}
+                                            />
+                                        </View>
+                                        <View style={{backgroundColor:'#272b48', flexDirection:'column', borderRadius:10, alignItems:'center', height:50, width:'30%', justifyContent:'center'}}>
+                                            <Text style={{color:'white', fontSize:13, fontFamily:'bold-font', textAlign:'center'}}>SOLD</Text>
+                                            <Text style={{color:'white', fontSize:13, fontFamily:'bold-font', textAlign:'center'}}>{this.state.chosenCurrencyValue.toFixed(3)}</Text>
+                                        </View>
                                     </View>
+                                    <Text>{this.state.cryptoSelected}</Text>
+                                    <Text>{this.state.cryptoSelectedValue}</Text>
                                     <Text style={{color:'black', fontSize:15, fontFamily:'bold-font'}}>{this.state.calculatedAmountForBuy}</Text>
                             </View>
                             <View style={{flexDirection:'row', width:'75%', justifyContent:'space-around',flex:0.2, alignItems:'center'}}>
                                 <TouchableOpacity   style={{height:40, width:80, backgroundColor:"#1a6594", borderRadius:5, alignItems:'center', justifyContent:'center'}}
-                                                    onPress={this._onBuyPressHandler}
+                                                    onPress={this._onConfirmBuy}
                                 >
                                     <Text style={{color:'white', fontSize:14, fontFamily:'bold-font'}}>BUY</Text>
                                 </TouchableOpacity>
