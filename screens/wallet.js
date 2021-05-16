@@ -1,14 +1,7 @@
 import React from 'react';
-import {View, Text, StyleSheet, StatusBar, Alert, TouchableOpacity, Image, TextInput, Dimensions, ScrollView, RefreshControl} from 'react-native';
-import {
-    LineChart,
-    BarChart,
-    PieChart,
-    ProgressChart,
-    ContributionGraph,
-    StackedBarChart
-  } from "react-native-chart-kit";
-  import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import {View, Text, StyleSheet, Alert, TouchableOpacity, Image, Dimensions, ScrollView, RefreshControl} from 'react-native';
+import LineChart from "react-native-chart-kit";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import * as firebase from "firebase";
 
