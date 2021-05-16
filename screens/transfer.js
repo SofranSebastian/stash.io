@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, StatusBar, Alert, TouchableOpacity, Image, Modal, TextInput, Dimensions, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, Alert, TouchableOpacity, Image, Modal, TextInput} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
