@@ -1,6 +1,5 @@
 import React from 'react';
 import {Text, Image} from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {NavigationContainer} from '@react-navigation/native';
 
