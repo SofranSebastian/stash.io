@@ -6,7 +6,7 @@ const slides = [
     {
         key: "one",
         title: "KEEP IT ORGANIZED",
-        text: "Buy any available cryptocurrency with real cash right in the app or sell it.",
+        text: "Buy any available cryptocurrency with money right in the app or sell your cryptos for money.",
         image: require('../images/icon_organized.png')
     },
     {
@@ -17,8 +17,8 @@ const slides = [
     },
     {
         key: "three",
-        title: "SAFE PROCESS",
-        text: "Change your cryptocurrencies to other currencies or fiat, safely and realiably.",
+        title: "TRANSFER",
+        text: "Transfer any coin you have instantly and easily to anyone by following a simple process.",
         image: require('../images/icon_safe.png')
     }
 ]
@@ -37,7 +37,7 @@ export default class Preview extends React.Component {
             <View style={{ flex:1, alignItems:'center', justifyContent:'center'}}>
                 <Image source={item.image} resizeMode="cover" style={{width:150,height:150, marginVertical:'5%'}}/>
                 <Text style={{color:'white', fontSize:24, fontFamily:'bold-font'}}>{item.title}</Text>
-                <Text style={{color:'white', fontSize:18, fontFamily:'normal-font', marginHorizontal:'15%', textAlign:'center'}}>{item.text}</Text>
+                <Text style={{color:'white', fontSize:16, fontFamily:'normal-font', marginHorizontal:'12%', textAlign:'center'}}>{item.text}</Text>
             </View>
         )
     }
@@ -53,14 +53,17 @@ export default class Preview extends React.Component {
                         </Text>
                     </TouchableOpacity>
                 </View>
-                <AppIntroSlider
-                    renderItem={this._renderItem}
-                    data = {slides}
-                    activeDotStyle={{backgroundColor:"#00a0d4"}}
-                    dotStyle={{backgroundColor:'#55597c'}}
-                    nextLabel=""
-                    doneLabel=""
-                />
+                <View style={{flex:0.9, marginBottom:'10%'}}>
+                    <AppIntroSlider
+                        renderItem={this._renderItem}
+                        data = {slides}
+                        activeDotStyle={{backgroundColor:"#00a0d4"}}
+                        dotStyle={{backgroundColor:'#55597c'}}
+                        nextLabel=""
+                        doneLabel=""
+                        
+                    />
+                </View>
             </View>
         );
     }
