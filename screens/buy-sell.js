@@ -5,6 +5,8 @@ import DropDownPicker from 'react-native-dropdown-picker';
 
 import * as firebase from "firebase";
 
+const dummyData = require('../data.json')
+
 export default class BuyAndSell extends React.Component {
     constructor() {
         super();
