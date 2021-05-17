@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, Alert, TouchableOpacity, Image, TextInput, ScrollView, RefreshControl, Modal} from 'react-native';
+import {View, Text, StyleSheet, StatusBar, Alert, TouchableOpacity, Image, TextInput, Dimensions, ScrollView, RefreshControl, Modal} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownPicker from 'react-native-dropdown-picker';
 
@@ -12,7 +12,7 @@ export default class BuyAndSell extends React.Component {
         super();
 
         this.state = {
-            cryptoData: dummyData.data,
+            cryptoData: [],
             refresh: false,
             isModalForBuyVisible: false,
             isModalForSellVisible: false,
@@ -108,7 +108,7 @@ export default class BuyAndSell extends React.Component {
     _handlerGetDataForTopTen = async() => {
         await fetch("http://ec2-3-66-169-251.eu-central-1.compute.amazonaws.com/", {"method": "GET"})
         .then( (response) => response.json() )
-        .then((responseData) => this.setState({cryptoData : dummyData.data}) )
+        .then((responseData) => this.setState({cryptoData : responseData.data}) )
         .catch( (error) => console.log(error))
     }
 
@@ -134,11 +134,23 @@ export default class BuyAndSell extends React.Component {
         this.setState({ isModalForSellVisible:true, 
                         cryptoSelected:cryptoName, 
                         cryptoSelectedValue:cryptoValue,
+                        amountEntered: 0,
                     })
+
+        var found = false;
+        var index = -1;
+
         for ( var i = 0 ; i < this.state.currenciesData.length ; i++ ){
             if(this.state.currenciesData[i].label === cryptoName){
-                this.setState({ chosenCurrencyValue:this.state.currenciesData[i].value})
+                found = true,
+                index = i
             }
+        }
+
+        if( found === true ){
+            this.setState({ chosenCurrencyValue:this.state.currenciesData[index].value})
+        }else{
+            this.setState({ chosenCurrencyValue:0})
         }
 
         if(cryptoName === 'Bitcoin'){ this.setState({chosenCurrencySymbol:'BTC' })}
@@ -150,13 +162,24 @@ export default class BuyAndSell extends React.Component {
         if(cryptoName === 'XRP'){ this.setState({chosenCurrencySymbol:'XRP' })}
         if(cryptoName === 'Polkadot'){ this.setState({chosenCurrencySymbol:'DOT' })}
         if(cryptoName === 'InternetComputer'){ this.setState({chosenCurrencySymbol:'ICP' })}
-        if(cryptoName === 'BictoinCash'){ this.setState({chosenCurrencySymbol:'BCH' })}
+        if(cryptoName === 'BitcoinCash'){ this.setState({chosenCurrencySymbol:'BCH' })}
     }
     
     _onConfirmBuy = () => {
         if(this.state.amountEntered > this.state.chosenCurrencyValue){
             Alert.alert("Error",
                                 "The amount is bigger than what you have.",
+                                [
+                                    {
+                                        text:'Try Again',
+                                        onPress: () => console.log("Try Again Pressed"),
+                                        style: 'cancel'
+                                    }
+                                ]
+                            )
+        }else if(this.state.amountEntered < 50){
+            Alert.alert("Error",
+                                "The amount entered is too small. Minimum amount is 50$.",
                                 [
                                     {
                                         text:'Try Again',
@@ -314,6 +337,18 @@ export default class BuyAndSell extends React.Component {
                                     }
                                 ]
                             )
+        }else if(this.state.amountEntered*this.state.cryptoSelectedValue < 50){
+                        Alert.alert("Error",
+                                "The amount entered is too small. Minimum amount is 50$.",
+                                [
+                                    {
+                                        text:'Try Again',
+                                        onPress: () => console.log("Try Again Pressed"),
+                                        style: 'cancel'
+                                    }
+                                ]
+                            )
+            
         }else{
 
             let path_buy = '/users/' + this.state.emailFromUser + '/currencies'
@@ -486,7 +521,8 @@ export default class BuyAndSell extends React.Component {
                                 />
                             }
                 >
-                                {
+                    {   this.state.cryptoData.length !== 0 ?
+                                
                                 this.state.cryptoData.map((item) => (
                                         <View key={item.id} style={{flex:1,flexDirection:'column', marginHorizontal:'5%', marginVertical:'2%',height:90, width:'90%', backgroundColor:'#272b48', borderRadius:5, alignItems:'center', justifyContent:'space-around'}}>
 
@@ -518,7 +554,13 @@ export default class BuyAndSell extends React.Component {
                                                 </View>
                                         </View>
                                     ))
-                                }
+                        :
+
+                            <View style={{justifyContent:'center', alignItems:'center'}}>
+                                <Text style={{fontFamily:'bold-font', fontSize:18, color:'white', marginTop:'2%'}}>Cryptos N/A. Couldn't retrieve data.</Text>
+                                <Text style={{fontFamily:'bold-font', fontSize:18, color:'white', marginTop:'2%'}}>Server is down.</Text>
+                            </View>
+                        }
                     </ScrollView>
                     <Modal  animationType="slide"
                             visible={this.state.isModalForBuyVisible}
@@ -553,8 +595,24 @@ export default class BuyAndSell extends React.Component {
                                                                 marginLeft:'2%',
                                                                 fontFamily:'normal-font',
                                                             }}
-                                                        keyboardType="numeric"
-                                                        onChangeText={ amount => this.setState({amountEntered:amount})}
+                                                        keyboardType="number-pad"
+                                                        onChangeText={ amount => {  if(String(amount).startsWith('.') || String(amount).startsWith('-') ){
+                                                                                                        Alert.alert(  "Error",
+                                                                                                        'Only positive amounts please',
+                                                                                                        [
+                                                                                                            {
+                                                                                                                text:'Ok',
+                                                                                                                onPress: () => console.log("Ok Pressed")
+                                                                                                            }
+                                                                                                        ]
+                                                                                        )
+                                                                                        this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+                                                                                    }else{
+                                                                                        this.setState({amountEntered:amount})
+                                                                                    }
+                                                                                    
+                                                                                } 
+                                                                    }
                                                         value={this.state.amountEntered}
                                             />
                                         </View>
@@ -619,7 +677,23 @@ export default class BuyAndSell extends React.Component {
                                                                 fontFamily:'normal-font',
                                                             }}
                                                         keyboardType="numeric"
-                                                        onChangeText={ amount => this.setState({amountEntered:amount})}
+                                                        onChangeText={ amount => {  if(String(amount).startsWith('.') || String(amount).startsWith('-') ){
+                                                                                                        Alert.alert(  "Error",
+                                                                                                        'Only positive amounts please',
+                                                                                                        [
+                                                                                                            {
+                                                                                                                text:'Ok',
+                                                                                                                onPress: () => console.log("Ok Pressed")
+                                                                                                            }
+                                                                                                        ]
+                                                                                        )
+                                                                                        this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
+                                                                                    }else{
+                                                                                        this.setState({amountEntered:amount})
+                                                                                    }
+                                                                                    
+                                                                                } 
+                                                                    }
                                                         value={this.state.amountEntered}
                                             />
                                         </View>
