@@ -1,6 +1,6 @@
 import React from 'react';
-import {View, Text, StyleSheet, Alert, TouchableOpacity, Image, Dimensions, ScrollView, RefreshControl} from 'react-native';
-import LineChart from "react-native-chart-kit";
+import {View, Text, StyleSheet, Alert, TouchableOpacity, Image, Dimensions, ActivityIndicator, ScrollView, RefreshControl} from 'react-native';
+import {LineChart} from "react-native-chart-kit";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import * as firebase from "firebase";
@@ -121,17 +121,21 @@ export default class Wallet extends React.Component {
                                     />
                                 }
                     >
-                                {
-                                this.state.currenciesData.map((item) => (
-                                        <View key={item[0]} style={{height:200, width:125, backgroundColor:'#272b48', marginHorizontal:5, borderRadius:20, alignItems:'center', justifyContent:'center'}}>
-                                            <Text style={{color:'#303463', fontSize:28, fontFamily:'normal-font'}}>●</Text>
-                                            <Text style={{color:'white', fontSize:14, fontFamily:'light-font'}}>Fiat:</Text>
-                                            <Text style={{color:'white', fontSize:14, fontFamily:'bold-font'}}>{item[0]}</Text>
-                                            <Text style={{color:'white', fontSize:14, fontFamily:'light-font'}}>Value:</Text>
-                                            <Text style={{color:'white', fontSize:14, fontFamily:'bold-font'}}>{Number.isInteger(item[1]) ?  item[1] : String(item[1].toFixed(3)).replace('.',',')}</Text>
-                                            <Text style={{color:'#303463', fontSize:28, fontFamily:'normal-font'}}>●</Text>
-                                        </View>
-                                    ))
+                                { this.state.currenciesData.length !== 0 ?
+                                    this.state.currenciesData.map((item) => (
+                                            <View key={item[0]} style={{height:200, width:125, backgroundColor:'#272b48', marginHorizontal:5, borderRadius:20, alignItems:'center', justifyContent:'center'}}>
+                                                <Text style={{color:'#303463', fontSize:28, fontFamily:'normal-font'}}>●</Text>
+                                                <Text style={{color:'white', fontSize:14, fontFamily:'light-font'}}>Fiat:</Text>
+                                                <Text style={{color:'white', fontSize:14, fontFamily:'bold-font'}}>{item[0]}</Text>
+                                                <Text style={{color:'white', fontSize:14, fontFamily:'light-font'}}>Value:</Text>
+                                                <Text style={{color:'white', fontSize:14, fontFamily:'bold-font'}}>{Number.isInteger(item[1]) ?  item[1] : String(item[1].toFixed(3)).replace('.',',')}</Text>
+                                                <Text style={{color:'#303463', fontSize:28, fontFamily:'normal-font'}}>●</Text>
+                                            </View>
+                                        ))
+
+                                    :
+                                    
+                                        <ActivityIndicator  size="large" color="white"/>
                                 }
                     </ScrollView>
                 </View>
@@ -193,10 +197,7 @@ export default class Wallet extends React.Component {
                         />
 
                     :
-                        <View style={{justifyContent:'center', alignItems:'center'}}>
-                            <Text style={{fontFamily:'bold-font', fontSize:18, color:'white', marginTop:'2%'}}>Chart N/A. Couldn't retrieve data.</Text>
-                            <Text style={{fontFamily:'bold-font', fontSize:18, color:'white', marginTop:'2%'}}>Server is down.</Text>
-                        </View>
+                        <ActivityIndicator  size="large" color="white"/>
                     }
                     </ScrollView>
             </View>
