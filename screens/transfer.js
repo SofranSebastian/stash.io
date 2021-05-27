@@ -21,7 +21,7 @@ export default class Transfer extends React.Component {
             currenciesData: [],
             usersArray: [],
             oldCurrenciesData : {},
-            isModalVisible: false,
+            isModalVisible: false
         }
     }
 
@@ -112,7 +112,7 @@ export default class Transfer extends React.Component {
            ( this.state.amountEntered !== '') &&
            ( this.state.chosenCurrencyValue !== 0)
         ){              
-            if( this.state.usersArray.includes(this.state.usernameEntered) === false){
+            if( this.state.usersArray.includes(this.state.usernameEntered) === false ){
                 Alert.alert("Error",
                                 "The user does not exist.",
                                 [
@@ -124,41 +124,53 @@ export default class Transfer extends React.Component {
                                 ]
                             )
             }else{
-
-                if( this.state.amountEntered > this.state.chosenCurrencyValue){
-                    Alert.alert("Error",
-                                "The amount is bigger than what you have.",
-                                [
-                                    {
-                                        text:'Try Again',
-                                        onPress: () => console.log("Try Again Pressed"),
-                                        style: 'cancel'
-                                    }
-                                ]
-                            )
+                if(this.state.usernameEntered == this.state.emailFromUser){
+                        Alert.alert("Error",
+                        "You can't transfer to yourself.",
+                        [
+                            {
+                                text:'Try Again',
+                                onPress: () => console.log("Try Again Pressed"),
+                                style: 'cancel'
+                            }
+                        ]
+                    )
                 }else{
-                   
+                    if( this.state.amountEntered > this.state.chosenCurrencyValue){
+                        Alert.alert("Error",
+                                    "The amount is bigger than what you have.",
+                                    [
+                                        {
+                                            text:'Try Again',
+                                            onPress: () => console.log("Try Again Pressed"),
+                                            style: 'cancel'
+                                        }
+                                    ]
+                                )
+                    }else{
+                    
 
-                            this.setState({isModalVisible:!this.state.isModalVisible})
-                            
-                            firebase.database()
-                            .ref('/users')
-                            .once('value')
-                            .then((snapshot) =>{
-                    
-                                var temporary_object = {};
-                    
-                                snapshot.forEach( (childSnapshot) => {
-                    
-                                    if( childSnapshot.val().username === this.state.usernameEntered ){
-                                        
-                                        temporary_object = childSnapshot.val().currencies
-                                    }
+                                this.setState({isModalVisible:!this.state.isModalVisible})
+                                
+                                firebase.database()
+                                .ref('/users')
+                                .once('value')
+                                .then((snapshot) =>{
+                        
+                                    var temporary_object = {};
+                        
+                                    snapshot.forEach( (childSnapshot) => {
+                        
+                                        if( childSnapshot.val().username === this.state.usernameEntered ){
+                                            
+                                            temporary_object = childSnapshot.val().currencies
+                                        }
+                                    })
+                                    this.setState({oldCurrenciesData:temporary_object})
                                 })
-                                this.setState({oldCurrenciesData:temporary_object})
-                            })
-                         
                             
+                                
+                    }
                 }
             }
         }else{
@@ -178,11 +190,25 @@ export default class Transfer extends React.Component {
 
     _handlerConfirmTransfer = () => {
 
+
+
                         let path = '/users/' + this.state.usernameEntered + '/currencies'
                         let path_me = '/users/' + this.state.emailFromUser + '/currencies'
 
                         let value = 0
                         let value_me = 0
+
+                        let day = new Date().getDate();
+                        let month = new Date().getMonth() + 1;
+
+                        let hours = new Date().getHours();
+                        let minutes = new Date().getMinutes();
+                        let seconds = new Date().getSeconds();
+
+                        let timeComposed = hours+":"+minutes+":"+seconds;
+                        let dateComposed = day + "/"+ month;
+                        let childPath = this.state.emailFromUser+"/"+hours+minutes+seconds;
+                        let childPathRecepient = this.state.usernameEntered+"/"+hours+minutes+seconds;
 
                         if(this.state.chosenCurrency === 'USD'){
                             value = Number(this.state.oldCurrenciesData.USD) +  Number(this.state.amountEntered)
@@ -196,6 +222,21 @@ export default class Transfer extends React.Component {
                                                                                 }
                                                                             ]
                                         )
+                                        firebase.database().ref('/history/').child(childPath).set({
+
+                                            action: 'transfer',
+                                            type: 'sent',
+                                            amount: this.state.amountEntered + " USD",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
+                                        firebase.database().ref('/history/').child(childPathRecepient).set({
+                                            action: 'transfer',
+                                            type: 'received',
+                                            amount: this.state.amountEntered + " USD",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
                             this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
                         }
                         if(this.state.chosenCurrency === 'Bitcoin'){
@@ -214,6 +255,20 @@ export default class Transfer extends React.Component {
                                                                                 }
                                                                             ]
                                         )
+                                        firebase.database().ref('/history/').child(childPath).set({
+                                            action: 'transfer',
+                                            type: 'sent',
+                                            amount: this.state.amountEntered + " Bitcoin",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
+                                        firebase.database().ref('/history/').child(childPathRecepient).set({
+                                            action: 'transfer',
+                                            type: 'received',
+                                            amount: this.state.amountEntered + " Bitcoin",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
                             this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
                         }
                         if(this.state.chosenCurrency === 'Ethereum'){
@@ -232,6 +287,20 @@ export default class Transfer extends React.Component {
                                                                                 }
                                                                             ]
                                         )
+                                        firebase.database().ref('/history/').child(childPath).set({
+                                            action: 'transfer',
+                                            type: 'sent',
+                                            amount: this.state.amountEntered + " Ethereum",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
+                                        firebase.database().ref('/history/').child(childPathRecepient).set({
+                                            action: 'transfer',
+                                            type: 'received',
+                                            amount: this.state.amountEntered + " Ethereum",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
                             this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
                         }
                         if(this.state.chosenCurrency === 'BinanceCoin'){
@@ -250,6 +319,20 @@ export default class Transfer extends React.Component {
                                                                                 }
                                                                             ]
                                         )
+                                        firebase.database().ref('/history/').child(childPath).set({
+                                            action: 'transfer',
+                                            type: 'sent',
+                                            amount: this.state.amountEntered + " BinanceCoin",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
+                                        firebase.database().ref('/history/').child(childPathRecepient).set({
+                                            action: 'transfer',
+                                            type: 'received',
+                                            amount: this.state.amountEntered + " BinanceCoin",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
                             this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
                         }
                         if(this.state.chosenCurrency === 'Tether'){
@@ -268,6 +351,20 @@ export default class Transfer extends React.Component {
                                                                                 }
                                                                             ]
                                         )
+                                        firebase.database().ref('/history/').child(childPath).set({
+                                            action: 'transfer',
+                                            type: 'sent',
+                                            amount: this.state.amountEntered + " Tether",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
+                                        firebase.database().ref('/history/').child(childPathRecepient).set({
+                                            action: 'transfer',
+                                            type: 'received',
+                                            amount: this.state.amountEntered + " Tether",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
                             this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
                         }
                         if(this.state.chosenCurrency === 'Dogecoin'){
@@ -286,6 +383,20 @@ export default class Transfer extends React.Component {
                                                                                 }
                                                                             ]
                                         )
+                                        firebase.database().ref('/history/').child(childPath).set({
+                                            action: 'transfer',
+                                            type: 'sent',
+                                            amount: this.state.amountEntered + " Dogecoin",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
+                                        firebase.database().ref('/history/').child(childPathRecepient).set({
+                                            action: 'transfer',
+                                            type: 'received',
+                                            amount: this.state.amountEntered + " Dogecoin",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
                             this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
                         }
                         if(this.state.chosenCurrency === 'Cardano'){
@@ -304,6 +415,20 @@ export default class Transfer extends React.Component {
                                                                                 }
                                                                             ]
                                         )
+                                        firebase.database().ref('/history/').child(childPath).set({
+                                            action: 'transfer',
+                                            type: 'sent',
+                                            amount: this.state.amountEntered + " Cardano",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
+                                        firebase.database().ref('/history/').child(childPathRecepient).set({
+                                            action: 'transfer',
+                                            type: 'received',
+                                            amount: this.state.amountEntered + " Cardano",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
                             this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
                         }
                         if(this.state.chosenCurrency === 'XRP'){
@@ -322,6 +447,20 @@ export default class Transfer extends React.Component {
                                                                                 }
                                                                             ]
                                         )
+                                        firebase.database().ref('/history/').child(childPath).set({
+                                            action: 'transfer',
+                                            type: 'sent',
+                                            amount: this.state.amountEntered + " XRP",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
+                                        firebase.database().ref('/history/').child(childPathRecepient).set({
+                                            action: 'transfer',
+                                            type: 'received',
+                                            amount: this.state.amountEntered + " XRP",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
                             this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
                         }
                         if(this.state.chosenCurrency === 'Polkadot'){
@@ -340,6 +479,20 @@ export default class Transfer extends React.Component {
                                                                                 }
                                                                             ]
                                         )
+                                        firebase.database().ref('/history/').child(childPath).set({
+                                            action: 'transfer',
+                                            type: 'sent',
+                                            amount: this.state.amountEntered + " Polkadot",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
+                                        firebase.database().ref('/history/').child(childPathRecepient).set({
+                                            action: 'transfer',
+                                            type: 'received',
+                                            amount: this.state.amountEntered + " Polkadot",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
                             this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
                         }
                         if(this.state.chosenCurrency === 'InternetComputer'){
@@ -358,6 +511,20 @@ export default class Transfer extends React.Component {
                                                                                 }
                                                                             ]
                                         )
+                                        firebase.database().ref('/history/').child(childPath).set({
+                                            action: 'transfer',
+                                            type: 'sent',
+                                            amount: this.state.amountEntered + " InternetComputer",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
+                                        firebase.database().ref('/history/').child(childPathRecepient).set({
+                                            action: 'transfer',
+                                            type: 'received',
+                                            amount: this.state.amountEntered + " InternetComputer",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
                             this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
                         }
                         if(this.state.chosenCurrency === 'BitcoinCash'){
@@ -376,6 +543,20 @@ export default class Transfer extends React.Component {
                                                                                 }
                                                                             ]
                                         )
+                                        firebase.database().ref('/history/').child(childPath).set({
+                                            action: 'transfer',
+                                            type: 'sent',
+                                            amount: this.state.amountEntered + " BitcoinCash",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
+                                        firebase.database().ref('/history/').child(childPathRecepient).set({
+                                            action: 'transfer',
+                                            type: 'received',
+                                            amount: this.state.amountEntered + " BitcoinCash",
+                                            date: dateComposed,
+                                            time: timeComposed
+                                        })
                             this.props.navigation.reset({index:0, routes:[{name:"Transfer"}]});
                         }
                               

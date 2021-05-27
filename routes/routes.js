@@ -12,6 +12,7 @@ import LogIn from '../screens/log-in.js';
 import Wallet from '../screens/wallet.js';
 import BuyAndSell from '../screens/buy-sell.js';
 import Transfer from '../screens/transfer.js';
+import History from '../screens/history.js';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -57,6 +58,16 @@ function MyBottomTabNavigator(){
                                 <Image  source={require('../images/icon_transfer.png')} style={{width:25,height:25}}/>
                             ),
                             tabBarLabel: <Text style={{fontWeight:'bold', fontSize:14}}>Transfer</Text>  
+                        }}
+            
+            />
+                         <Tab.Screen name="History"
+                        component={History}
+                        options={{   
+                            tabBarIcon: ({color}) => (
+                                <Image  source={require('../images/icon_history.png')} style={{width:25,height:25}}/>
+                            ),
+                            tabBarLabel: <Text style={{fontWeight:'bold', fontSize:14}}>History</Text>  
                         }}
             
             />

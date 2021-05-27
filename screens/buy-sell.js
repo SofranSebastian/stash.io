@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, StatusBar, Alert, TouchableOpacity, Image, TextInput, Dimensions, ScrollView, RefreshControl, Modal} from 'react-native';
+import {View, Text, StyleSheet, ActivityIndicator, Alert, TouchableOpacity, Image, TextInput, Dimensions, ScrollView, RefreshControl, Modal} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownPicker from 'react-native-dropdown-picker';
 
@@ -114,7 +114,9 @@ export default class BuyAndSell extends React.Component {
 
     _onRefresh(){
         this.setState({refresh: true});
+        this._handleGetUSDFromUser();
         this._handlerGetDataForTopTen();
+        this._handleGetAllCurrenciesFromUser();
         this.setState({refresh:false});
       }
 
@@ -190,6 +192,17 @@ export default class BuyAndSell extends React.Component {
                             )
         }else{
 
+            let day = new Date().getDate();
+            let month = new Date().getMonth() + 1;
+
+            let hours = new Date().getHours();
+            let minutes = new Date().getMinutes();
+            let seconds = new Date().getSeconds();
+
+            let timeComposed = hours+":"+minutes+":"+seconds;
+            let dateComposed = day + "/"+ month;
+            let childPath = this.state.emailFromUser+"/"+hours+minutes+seconds;
+
             let path_buy = '/users/' + this.state.emailFromUser + '/currencies'
             let value_buy = Number(this.state.amountEntered/this.state.cryptoSelectedValue)
             let value_decrease = Number(this.state.chosenCurrencyValue) - Number(this.state.amountEntered)
@@ -204,6 +217,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The purchase is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'buy',
+                                                                amount: Number(this.state.amountEntered/this.state.cryptoSelectedValue).toFixed(3).toString() +" Bitcoin",
+                                                                amountEntered:this.state.amountEntered +" USD",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'Ethereum'){
@@ -217,6 +238,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The purchase is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'buy',
+                                                                amount: Number(this.state.amountEntered/this.state.cryptoSelectedValue).toFixed(3).toString() +" Ethereum",
+                                                                amountEntered:this.state.amountEntered +" USD",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'BinanceCoin'){
@@ -230,6 +259,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The purchase is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'buy',
+                                                                amount: Number(this.state.amountEntered/this.state.cryptoSelectedValue).toFixed(3).toString() +" BinanceCoin",
+                                                                amountEntered:this.state.amountEntered +" USD",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'Tether'){
@@ -243,6 +280,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The purchase is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'buy',
+                                                                amount: Number(this.state.amountEntered/this.state.cryptoSelectedValue).toFixed(3).toString() +" Tether",
+                                                                amountEntered:this.state.amountEntered +" USD",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'Dogecoin'){
@@ -256,6 +301,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The purchase is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'buy',
+                                                                amount: Number(this.state.amountEntered/this.state.cryptoSelectedValue).toFixed(3).toString() +" Dogecoin",
+                                                                amountEntered:this.state.amountEntered +" USD",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'Cardano'){
@@ -269,6 +322,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The purchase is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'buy',
+                                                                amount: Number(this.state.amountEntered/this.state.cryptoSelectedValue).toFixed(3).toString() +" Cardano",
+                                                                amountEntered:this.state.amountEntered +" USD",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'XRP'){
@@ -282,6 +343,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The purchase is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'buy',
+                                                                amount: Number(this.state.amountEntered/this.state.cryptoSelectedValue).toFixed(3).toString() +" XRP",
+                                                                amountEntered:this.state.amountEntered +" USD",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'Polkadot'){
@@ -295,6 +364,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The purchase is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'buy',
+                                                                amount: Number(this.state.amountEntered/this.state.cryptoSelectedValue).toFixed(3).toString() +" Polkadot",
+                                                                amountEntered:this.state.amountEntered +" USD",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'InternetComputer'){
@@ -308,6 +385,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The purchase is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'buy',
+                                                                amount: Number(this.state.amountEntered/this.state.cryptoSelectedValue).toFixed(3).toString() +" InternetComputer",
+                                                                amountEntered:this.state.amountEntered +" USD",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'BitcoinCash'){
@@ -321,6 +406,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The purchase is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'buy',
+                                                                amount: Number(this.state.amountEntered/this.state.cryptoSelectedValue).toFixed(3).toString() +" BinanceCoin",
+                                                                amountEntered:this.state.amountEntered +" USD",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
         }   
@@ -351,6 +444,17 @@ export default class BuyAndSell extends React.Component {
             
         }else{
 
+            let day = new Date().getDate();
+            let month = new Date().getMonth() + 1;
+
+            let hours = new Date().getHours();
+            let minutes = new Date().getMinutes();
+            let seconds = new Date().getSeconds();
+
+            let timeComposed = hours+":"+minutes+":"+seconds;
+            let dateComposed = day + "/"+ month;
+            let childPath = this.state.emailFromUser+"/"+hours+minutes+seconds;
+
             let path_buy = '/users/' + this.state.emailFromUser + '/currencies'
             let value_sell = Number(this.state.amountEntered*this.state.cryptoSelectedValue)
             let value_decrease = Number(this.state.chosenCurrencyValue) - Number(this.state.amountEntered)
@@ -366,6 +470,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The purchase is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'sell',
+                                                                amount: Number(this.state.amountEntered*this.state.cryptoSelectedValue).toFixed(3).toString() +" USD",
+                                                                amountEntered:this.state.amountEntered +" Bitcoin",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'Ethereum'){
@@ -379,6 +491,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The sell is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'sell',
+                                                                amount: Number(this.state.amountEntered*this.state.cryptoSelectedValue).toFixed(3).toString() +" USD",
+                                                                amountEntered:this.state.amountEntered +" Ethereum",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'BinanceCoin'){
@@ -392,6 +512,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The sell is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'sell',
+                                                                amount: Number(this.state.amountEntered*this.state.cryptoSelectedValue).toFixed(3).toString() +" USD",
+                                                                amountEntered:this.state.amountEntered +" BinanceCoin",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'Tether'){
@@ -405,6 +533,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The sell is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'sell',
+                                                                amount: Number(this.state.amountEntered*this.state.cryptoSelectedValue).toFixed(3).toString() +" USD",
+                                                                amountEntered:this.state.amountEntered +" Tether",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'Dogecoin'){
@@ -418,6 +554,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The sell is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'sell',
+                                                                amount: Number(this.state.amountEntered*this.state.cryptoSelectedValue).toFixed(3).toString() +" USD",
+                                                                amountEntered:this.state.amountEntered +" Dogecoin",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'Cardano'){
@@ -431,6 +575,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The sell is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'sell',
+                                                                amount: Number(this.state.amountEntered*this.state.cryptoSelectedValue).toFixed(3).toString() +" USD",
+                                                                amountEntered:this.state.amountEntered +" Cardano",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'XRP'){
@@ -444,6 +596,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The sell is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'sell',
+                                                                amount: Number(this.state.amountEntered*this.state.cryptoSelectedValue).toFixed(3).toString() +" USD",
+                                                                amountEntered:this.state.amountEntered +" XRP",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'Polkadot'){
@@ -457,6 +617,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The sell is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'sell',
+                                                                amount: Number(this.state.amountEntered*this.state.cryptoSelectedValue).toFixed(3).toString() +" USD",
+                                                                amountEntered:this.state.amountEntered +" Polkadot",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'InternetComputer'){
@@ -470,6 +638,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The sell is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'sell',
+                                                                amount: Number(this.state.amountEntered*this.state.cryptoSelectedValue).toFixed(3).toString() +" USD",
+                                                                amountEntered:this.state.amountEntered +" InternetComputer",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
             if(this.state.cryptoSelected === 'BitcoinCash'){
@@ -483,6 +659,14 @@ export default class BuyAndSell extends React.Component {
                 Alert.alert("Success!","The sell is done.",[
                                                                 {text:'Ok',onPress: () => console.log("Ok Pressed"),}
                                                             ])
+                                                            firebase.database().ref('/history/').child(childPath).set({
+                                                                action: 'transaction',
+                                                                type: 'sell',
+                                                                amount: Number(this.state.amountEntered*this.state.cryptoSelectedValue).toFixed(3).toString() +" USD",
+                                                                amountEntered:this.state.amountEntered +" BitcoinCash",
+                                                                date: dateComposed,
+                                                                time: timeComposed
+                                                            })
                 this.props.navigation.reset({index:0, routes:[{name:"BuyAndSell"}]});
             }
         }
@@ -556,10 +740,7 @@ export default class BuyAndSell extends React.Component {
                                     ))
                         :
 
-                            <View style={{justifyContent:'center', alignItems:'center'}}>
-                                <Text style={{fontFamily:'bold-font', fontSize:18, color:'white', marginTop:'2%'}}>Cryptos N/A. Couldn't retrieve data.</Text>
-                                <Text style={{fontFamily:'bold-font', fontSize:18, color:'white', marginTop:'2%'}}>Server is down.</Text>
-                            </View>
+                            <ActivityIndicator  size="large" color="white"/>
                         }
                     </ScrollView>
                     <Modal  animationType="slide"
