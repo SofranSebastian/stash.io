@@ -56,6 +56,12 @@ Transfer:
 
 ![Screenshot_1622063200_25](https://user-images.githubusercontent.com/25872149/119731755-fd04b400-be7f-11eb-94ce-d50e19574c54.png)
 
+History:
+  - the main purpose of this functionality is to let the user see his history of transactions
+  - contains a card with a nice UI for each transaction made BUY/SELL/SENT/RECEIVE
+  - at the base of the screen you can see the navigation represented by a bottom material navigator
+
+![Screenshot_1622080878_25](https://user-images.githubusercontent.com/25872149/119755129-2df9de80-beaa-11eb-8404-68b5d20c9a89.png)
 
 
 
