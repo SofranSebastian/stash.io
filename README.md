@@ -11,7 +11,6 @@ Technologies used:
   - Express.js as backend web application framework
   - Firebase as Baas
 
-
 # Arhitecture Diagram
 
 ![dp](https://user-images.githubusercontent.com/25872149/119739944-b2893480-be8b-11eb-89c8-bbbd797bec23.jpg)
@@ -64,5 +63,13 @@ History:
 ![Screenshot_1622080878_25](https://user-images.githubusercontent.com/25872149/119755129-2df9de80-beaa-11eb-8404-68b5d20c9a89.png)
 
 
+# Run it
+
+How to start the project:
+  - first clone it
+  - use npm install for installing all the needed packages
+  - after the npm install is done start the application with expo start
+  - for running it on a simulator you can leave the Expo server on LAN
+  - if you want to scan the QR Code with the phone you need to switch to TUNNEL connection
 
   
